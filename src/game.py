@@ -1,5 +1,8 @@
 import pygame
 
+# TODO: prohibit making a move on an occupied cell
+# TODO: check for winner
+
 class Entity:
     def __init__(self, x, y):
         self.cell_is_busy = False
@@ -12,47 +15,46 @@ class TicTacToe:
         self.screen = screen
         self.move = "X"
 
-        self.field = [
-            [Entity(0, 0), Entity(100, 0), Entity(200, 0)],
-            [Entity(0, 100), Entity(100, 100), Entity(200, 100)],
-            [Entity(0, 200), Entity(100, 200), Entity(200, 200)],
-        ]
+        self.field = [[Entity(0, 0), Entity(100, 0), Entity(200, 0)],
+                [Entity(0, 100), Entity(100, 100), Entity(200, 100)],
+                [Entity(0, 200), Entity(100, 200), Entity(200, 200)],]
 
     def make_move(self, cell):
         if not cell.cell_is_busy:
             cell.cell_is_busy = True
+            cell.mark = self.move
+            self.move = "0" if self.move == "X" else "X"
 
-        cell.mark = self.move
-        self.move = "0" if self.move == "X" else "X"
+
+class UserInterface:
+    def __init__(self, tic_tac_toe):
+        self.tic_tac_toe = tic_tac_toe
 
     def update_buttons(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            for row in self.field:
+            for row in self.tic_tac_toe.field:
                 for cell in row: 
                     if cell.cell_button.collidepoint(event.pos):
-                        cell.cell_is_busy = True
-                        self.make_move(cell)
-
-    # TODO: check for winners
-    # def check_for_triple():    
+                        self.tic_tac_toe.make_move(cell)
 
     def render(self):
-        pygame.draw.line(self.screen, (0, 0, 0), (100, 0), (100, 300), 2)
-        pygame.draw.line(self.screen, (0, 0, 0), (200, 0), (200, 300), 2)
-        pygame.draw.line(self.screen, (0, 0, 0), (0, 100), (300, 100), 2)
-        pygame.draw.line(self.screen, (0, 0, 0), (0, 200), (300, 200), 2)
+        pygame.draw.line(self.tic_tac_toe.screen, (0, 0, 0), (100, 0), (100, 300), 2)
+        pygame.draw.line(self.tic_tac_toe.screen, (0, 0, 0), (200, 0), (200, 300), 2)
+        pygame.draw.line(self.tic_tac_toe.screen, (0, 0, 0), (0, 100), (300, 100), 2)
+        pygame.draw.line(self.tic_tac_toe.screen, (0, 0, 0), (0, 200), (300, 200), 2)
 
-        for row in self.field:
+        for row in self.tic_tac_toe.field:
             for cell in row:
                 center = cell.cell_button.center
                 if cell.mark == "X":
                     offset = 30
-                    pygame.draw.line(self.screen, (0, 0, 0), (center[0] - offset, center[1] - offset),
+                    pygame.draw.line(self.tic_tac_toe.screen, (0, 0, 0), (center[0] - offset, center[1] - offset),
                                         (center[0] + offset, center[1] + offset), 3)
-                    pygame.draw.line(self.screen, (0, 0, 0), (center[0] + offset, center[1] - offset),
+                    pygame.draw.line(self.tic_tac_toe.screen, (0, 0, 0), (center[0] + offset, center[1] - offset),
                                         (center[0] - offset, center[1] + offset), 3)
                 elif cell.mark == "0":
-                    pygame.draw.circle(self.screen, (0, 0, 0), center, 35, 3)
+                    pygame.draw.circle(self.tic_tac_toe.screen, (0, 0, 0), center, 35, 3)
+    
 
 def main():
     pygame.init()
@@ -60,6 +62,8 @@ def main():
     clock = pygame.time.Clock()
 
     tic_tac_toe = TicTacToe(screen)
+    ui = UserInterface(tic_tac_toe)
+
     running = True
 
     while running:
@@ -67,10 +71,10 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
 
-            tic_tac_toe.update_buttons(event)
+            ui.update_buttons(event)
 
         screen.fill("white")
-        tic_tac_toe.render()
+        ui.render()
 
         pygame.display.flip()
         clock.tick(60)
