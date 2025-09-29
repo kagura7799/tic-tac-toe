@@ -48,12 +48,12 @@ class UserInterface:
                 center = cell.cell_button.center
                 if cell.mark == "X":
                     offset = 30
-                    pygame.draw.line(self.tic_tac_toe.screen, (0, 0, 0), (center[0] - offset, center[1] - offset),
-                                        (center[0] + offset, center[1] + offset), 3)
-                    pygame.draw.line(self.tic_tac_toe.screen, (0, 0, 0), (center[0] + offset, center[1] - offset),
-                                        (center[0] - offset, center[1] + offset), 3)
+                    pygame.draw.line(self.tic_tac_toe.screen, (255, 0, 0), (center[0] - offset, center[1] - offset),
+                                        (center[0] + offset, center[1] + offset), 4)
+                    pygame.draw.line(self.tic_tac_toe.screen, (255, 0, 0), (center[0] + offset, center[1] - offset),
+                                        (center[0] - offset, center[1] + offset), 4)
                 elif cell.mark == "0":
-                    pygame.draw.circle(self.tic_tac_toe.screen, (0, 0, 0), center, 35, 3)
+                    pygame.draw.circle(self.tic_tac_toe.screen, (0, 0, 255), center, 35, 4)
     
 
 def main():
