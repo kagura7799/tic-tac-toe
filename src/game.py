@@ -15,8 +15,10 @@ class TicTacToe:
         self.screen = screen
         self.move = "X"
         self.winner_line = None
+        self.field = self.create_field()
 
-        self.field = [[Entity(0, 0), Entity(100, 0), Entity(200, 0)],
+    def create_field(self):
+        return [[Entity(0, 0), Entity(100, 0), Entity(200, 0)],
                 [Entity(0, 100), Entity(100, 100), Entity(200, 100)],
                 [Entity(0, 200), Entity(100, 200), Entity(200, 200)],]
 
@@ -49,6 +51,11 @@ class TicTacToe:
             if m1 and m1 == m2 == m3:
                 self.winner_line = line
                 break
+    
+    def reset(self):
+        self.move = "X"
+        self.winner_line = None
+        self.field = self.create_field()
 
 
 class UserInterface:
@@ -64,7 +71,6 @@ class UserInterface:
 
     def render(self):
         self.draw_grid()
-        self.draw_winner_line()
 
         for row in self.tic_tac_toe.field:
             for cell in row:
@@ -80,6 +86,8 @@ class UserInterface:
                 elif cell.mark == "0":
                     pygame.draw.circle(self.tic_tac_toe.screen, (0, 0, 255), center, 35, 4)
 
+        self.draw_winner_line()
+
     def draw_winner_line(self):
         if self.tic_tac_toe.winner_line:
             a, _, c = self.tic_tac_toe.winner_line
@@ -89,7 +97,7 @@ class UserInterface:
             start = start_cell.cell_button.center
             end = end_cell.cell_button.center
 
-            pygame.draw.line(self.tic_tac_toe.screen, (0, 255, 0), (start[0] - 10, start[1] - 10), end, 4)
+            pygame.draw.line(self.tic_tac_toe.screen, (0, 255, 0), start, end, 7)
 
     def draw_grid(self):
         pygame.draw.line(self.tic_tac_toe.screen, (0, 0, 0), (100, 0), (100, 300), 2)
@@ -111,6 +119,9 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_r:
+                    tic_tac_toe.reset()
 
             ui.update_buttons(event)
 
