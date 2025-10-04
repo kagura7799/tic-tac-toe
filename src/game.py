@@ -1,7 +1,5 @@
 import pygame
-
-# TODO: check for winner
-
+import random
 
 class Entity:
     def __init__(self, x, y):
@@ -14,6 +12,7 @@ class TicTacToe:
     def __init__(self, screen):
         self.screen = screen
         self.move = "X"
+        self.is_player_move = True
         self.winner_line = None
         self.field = self.create_field()
 
@@ -56,6 +55,11 @@ class TicTacToe:
         self.move = "X"
         self.winner_line = None
         self.field = self.create_field()
+
+    def auto_enemy_move(self):
+        random_cell = random.choice(random.choice(self.field))
+        if not random_cell.cell_is_busy:
+            self.make_move(random_cell)
 
 
 class UserInterface:
@@ -122,8 +126,11 @@ def main():
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_r:
                     tic_tac_toe.reset()
-
+        
             ui.update_buttons(event)
+
+        if tic_tac_toe.move == "0":
+            tic_tac_toe.auto_enemy_move()
 
         screen.fill("white")
         ui.render()
